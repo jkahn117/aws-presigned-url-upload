@@ -2,4 +2,4 @@
 /// Update with the endpoint to your API Gateway
 ///
 
-const SignedUrlEndpoint = 'https://<ENDPOINT_ID>.execute-api.<REGION>.amazonaws.com/prod'
+const SignedUrlEndpoint = 'https://<API_DOMAIN>.execute-api.<REGION>.amazonaws.com/prod'
