@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Uploading Files to Amazon S3 using Pre-Signed URLs</title>
+  <meta name="author" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="stylesheet" href="css/normalize.css">
+  <link rel="stylesheet" href="css/skeleton.css">
+  <link rel="stylesheet" href="css/app.css">
+</head>
+
+
+<body>
+	<div class="container">
+		<h1>Uploading Files to Amazon S3 using Pre-Signed URLs</h1>
+		<p>
+			This project is a sample approach to uploading files to Amazon S3 using <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/PresignedUrlUploadObject.html">Pre-Signed URLs</a>.  While this projects makes use of Node.js, any other backend platform with an availble AWS SDK can be supported.
+		</p>
+		<p>
+			For more details and source code, see: <a href="https://github.com/jkahn117/aws-presigned-url-upload">https://github.com/jkahn117/aws-presigned-url-upload</a>.
+		</p>
+
+		<hr/>
+
+		<div class="row">
+			<div class="one-half column">
+				<h3>Example</h3>
+				<form enctype="multipart/form-data" novalidate id="myForm">
+					<div class="row">
+						<label for="myFileInput">My File</label>
+						<input class="u-full-width" type="file" accept="image/*" id="myFileInput"/>
+					</div>
+
+					<div class="row">
+						<input class="button-primary" id="uploadButton" type="submit" value="Upload">
+					</div>
+				</form>
+			</div>
+
+			<div class="one-half column">
+				<h3>Console</h3>
+				<div class="row">
+					<pre><code id="console"></code></pre>
+				</div>
+			</div>
+		</div>
+
+		<hr/>
+
+		<div class="row">
+			<div class="one-half column">
+				<h3>Client</h3>
+				<div class="row">
+					<pre><code>// using jQuery
+$.ajax({
+  url: url,
+  type: 'PUT',
+  data: file,
+  processData: false,
+  contentType: file.type
+})</code></pre>
+				</div>
+			</div>
+
+			<div class="one-half column">
+				<h3>Server (Node.js)</h3>
+				<div class="row">
+					<pre><code>let params = {
+  Bucket: &lt;UPLOAD_BUCKET&gt;,
+  Key: fileName,
+  ContentType: fileType,
+  ACL: 'public-read'
+  // ServerSideEncryption: 'AES256' // <-- uncomment to add server-side encryption
+}
+
+let s3 = new AWS.S3()
+s3.getSignedUrl('putObject', params, (error, data) => {
+  if (error) {
+    // handle error
+  } else {
+    // handle success
+  }
+})</code></pre>
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+	<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+	<script src="js/config.js"></script>
+	<script src="js/app.js"></script>
+
+</body>
+</html>

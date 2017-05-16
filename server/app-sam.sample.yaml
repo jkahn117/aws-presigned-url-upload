@@ -1,0 +1,89 @@
+---
+
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: "AWS::Serverless-2016-10-31"
+
+Description: "Backend API for uploaded files to Amazon S3 via Pre-Signed URL"
+
+Resources:
+  ImageUploadBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: <BUCKET_NAME>
+      CorsConfiguration:
+        CorsRules:
+          - 
+            AllowedMethods: [ PUT ]
+            AllowedOrigins: [ '*' ]
+            AllowedHeaders: [ '*' ]
+
+  SignedUrlFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: api/
+      Handler: index.handler
+      Runtime: nodejs6.10
+      Role: !GetAtt SignedUrlFunctionRole.Arn
+      Environment:
+        Variables:
+          UPLOAD_BUCKET: !Ref ImageUploadBucket
+      Events:
+        GetUrl:
+          Type: Api
+          Properties:
+            RestApiId: !Ref SignedUrlApi
+            Path: /signedurl
+            Method: GET
+
+  SignedUrlFunctionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      Path: "/"
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          -
+            Sid: AllowLambdaServiceToAssumeRole
+            Effect: Allow
+            Action: 
+              - sts:AssumeRole
+            Principal:
+              Service: 
+                - lambda.amazonaws.com
+
+  SignedUrlFunctionPolicy:
+    Type: AWS::IAM::Policy
+    DependsOn: SignedUrlFunctionRole
+    Properties:
+      PolicyName: LambdaPetStoreSignedUrlFunctionPolicy
+      Roles:
+        - !Ref SignedUrlFunctionRole
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement: 
+          -
+            Effect:   "Allow"
+            Resource:
+              - !Sub arn:aws:s3:::${ImageUploadBucket}/*
+            Action:
+              - "s3:Put*"
+
+  SignedUrlApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: prod
+      DefinitionUri: swagger.yaml
+      Variables:
+        SignedUrlFunction: !Ref SignedUrlFunction
+
+Outputs:
+  ApiDomain:
+    Description: Domain of your API
+    Value: !Ref SignedUrlApi
+  ApiUrl:
+    Description: URL of your API
+    Value: !Sub
+      - http://${ApiDomain}.execute-api.${AWS::Region}.amazonaws.com/prod
+      - { ApiDomain: !Ref SignedUrlApi }

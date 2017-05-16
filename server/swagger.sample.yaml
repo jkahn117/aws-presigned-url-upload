@@ -1,0 +1,42 @@
+swagger: 2.0
+info:
+  title: 'presigned-url-api'
+paths:
+  '/signedurl':
+    get:
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      x-amazon-apigateway-integration:
+        httpMethod: POST
+        type: aws_proxy
+        uri: arn:aws:apigateway:<<REGION>>:lambda:path/2015-03-31/functions/arn:aws:lambda:<<REGION>>:<<ACCOUNT_NUMBER>>:function:${stageVariables.SignedUrlFunction}/invocations
+        responses: {}
+    options:
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        200:
+          description: 200 response
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+            Access-Control-Allow-Methods:
+              type: string
+            Access-Control-Allow-Headers:
+              type: string
+      x-amazon-apigateway-integration:
+        type: mock
+        passthroughBehavior: when_no_match
+        requestTemplates:
+          application/json: '{ "statusCode": 200 }'
+        responses:
+          default:
+            statusCode: 200
+            responseParameters:
+              method.response.header.Access-Control-Allow-Methods: "'GET,HEAD,OPTIONS'"
+              method.response.header.Access-Control-Allow-Headers: "'Content-Type,Authorization,X-Amz-Date,X-Api-Key,X-Amz-Security-Token'"
+              method.response.header.Access-Control-Allow-Origin: "'*'"

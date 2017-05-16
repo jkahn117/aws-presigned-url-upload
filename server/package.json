@@ -1,0 +1,16 @@
+{
+  "name": "aws-presigned-url-upload",
+  "version": "1.0.0",
+  "description": "Sample front and backend for uploading files to Amazon S3 via pre-signed URL",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jkahn117/aws-presigned-url-upload.git"
+  },
+  "author": "jkahn117",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/jkahn117/aws-presigned-url-upload/issues"
+  },
+  "homepage": "https://github.com/jkahn117/aws-presigned-url-upload#readme"
+}
