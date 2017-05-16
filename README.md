@@ -60,7 +60,7 @@ The deployment of our AWS resources is managed by the [Serverless Application Mo
 7. After your stack has been created, the sample API has been deployed and you can retrieve the domain of the API (going forward, we will refer to it as API_DOMAIN):
 
     ```
-    $ aws cloudformation describe-stacks --stack-name public-bikes-dev --query 'Stacks[0].Outputs[?OutputKey==`ApiDomain`].OutputValue'
+    $ aws cloudformation describe-stacks --stack-name aws-presigned-url-upload --query 'Stacks[0].Outputs[?OutputKey==`ApiDomain`].OutputValue'
     ```
 
 ## Configure Web Client
